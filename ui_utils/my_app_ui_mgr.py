@@ -1,5 +1,5 @@
 from typing import Optional, Any
-from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import Page, Locator, TimeoutError as PlaywrightTimeoutError
 
 
 class UIUtils:
@@ -10,7 +10,7 @@ class UIUtils:
     DEFAULT_TIMEOUT = 5000
 
     @staticmethod
-    def wait_for_selector(page: Page, selector: str, timeout: Optional[int] = None, visible: bool = True):
+    def wait_for_selector(page: Page, selector: Locator | str, timeout: Optional[int] = None, visible: bool = True):
         """Wait for selector to appear. Returns the element handle or None."""
         timeout = timeout if timeout is not None else UIUtils.DEFAULT_TIMEOUT
         state = "visible" if visible else "attached"
@@ -20,7 +20,7 @@ class UIUtils:
             return None
 
     @staticmethod
-    def click(page: Page, selector: str, timeout: Optional[int] = None, force: bool = False):
+    def click(page: Page, selector: Locator | str, timeout: Optional[int] = None, force: bool = False):
         """Waits for selector and clicks it."""
         timeout = timeout if timeout is not None else UIUtils.DEFAULT_TIMEOUT
         el = UIUtils.wait_for_selector(page, selector, timeout=timeout, visible=True)
@@ -29,7 +29,7 @@ class UIUtils:
         return page.click(selector, timeout=timeout, force=force)
 
     @staticmethod
-    def fill(page: Page, selector: str, text: str, timeout: Optional[int] = None):
+    def fill(page: Page, selector: Locator | str, text: str, timeout: Optional[int] = None):
         """Waits for selector and fills it with text (replaces existing)."""
         timeout = timeout if timeout is not None else UIUtils.DEFAULT_TIMEOUT
         el = UIUtils.wait_for_selector(page, selector, timeout=timeout, visible=True)
@@ -38,7 +38,7 @@ class UIUtils:
         return page.fill(selector, text, timeout=timeout)
 
     @staticmethod
-    def type_text(page: Page, selector: str, text: str, timeout: Optional[int] = None, delay: Optional[float] = 0):
+    def type_text(page: Page, selector: Locator | str, text: str, timeout: Optional[int] = None, delay: Optional[float] = 0):
         """Types text into an input, character by character (useful when fill doesn't work)."""
         timeout = timeout if timeout is not None else UIUtils.DEFAULT_TIMEOUT
         el = UIUtils.wait_for_selector(page, selector, timeout=timeout, visible=True)
@@ -47,7 +47,7 @@ class UIUtils:
         return page.type(selector, text, delay=delay)
 
     @staticmethod
-    def is_visible(page: Page, selector: str, timeout: Optional[int] = None) -> bool:
+    def is_visible(page: Page, selector: Locator | str, timeout: Optional[int] = None) -> bool:
         """Returns True if selector is visible within timeout, else False."""
         timeout = timeout if timeout is not None else UIUtils.DEFAULT_TIMEOUT
         try:
@@ -57,7 +57,7 @@ class UIUtils:
             return False
 
     @staticmethod
-    def get_text(page: Page, selector: str, timeout: Optional[int] = None) -> Optional[str]:
+    def get_text(page: Page, selector: Locator | str, timeout: Optional[int] = None) -> Optional[str]:
         """Gets text content of the selector or None if not found."""
         timeout = timeout if timeout is not None else UIUtils.DEFAULT_TIMEOUT
         el = UIUtils.wait_for_selector(page, selector, timeout=timeout, visible=False)
@@ -66,7 +66,7 @@ class UIUtils:
         return page.text_content(selector)
 
     @staticmethod
-    def get_attribute(page: Page, selector: str, attribute: str, timeout: Optional[int] = None) -> Optional[str]:
+    def get_attribute(page: Page, selector: Locator | str, attribute: str, timeout: Optional[int] = None) -> Optional[str]:
         """Gets an attribute value from an element."""
         timeout = timeout if timeout is not None else UIUtils.DEFAULT_TIMEOUT
         el = UIUtils.wait_for_selector(page, selector, timeout=timeout, visible=False)
