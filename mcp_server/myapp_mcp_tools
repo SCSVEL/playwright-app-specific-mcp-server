@@ -1,0 +1,40 @@
+"""
+Application specific tools to simulate the UI actions using Playwright or other frameworks.
+MCP server with tools, resources, and prompts.
+"""
+
+from playwright.sync_api import Locator, Page, request
+from mcp.server.fastmcp import FastMCP
+import ui_utils.my_app_ui_mgr as ui_mgr
+
+# Create an MCP server
+mcp = FastMCP("My App MCP Server", json_response=True)
+
+
+# Click tool
+@mcp.tool()
+def click_the_element(which_ele: Locator|str) -> int:
+    # Logic to click an element on the page
+    page: Page = mcp.context["page"]
+    ui_mgr.click(page, which_ele)
+    return 1    
+
+
+# Click tool
+@mcp.tool()
+def type_in_the_element(which_ele: Locator|str) -> int:
+    # Logic to type on the element on the page
+    page: Page = mcp.context["page"]
+    ui_mgr.type_text(page, which_ele)
+    return 1    
+
+
+@mcp.resource("file://documents/{name}")
+def save_report(name: str) -> str:    
+    # Keep on saving the steps or trace of actions performed
+    return f"Content of {name}"
+
+
+# Run with streamable HTTP transport
+if __name__ == "__main__":
+    mcp.run(transport="streamable-http")
